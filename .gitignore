@@ -1,3 +1,7 @@
+wpa_supplicant.conf
+ssid.conf
+temp/*
+
 # Logs
 logs
 *.log

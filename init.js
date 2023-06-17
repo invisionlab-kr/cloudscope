@@ -2,7 +2,7 @@ const cp = require("child_process");
 const fs = require("fs/promises");
 
 (async function() {
-  // 라즈베리파이를 AP모드로 작동시킬 수 있는 패키지 설치
+    // 라즈베리파이의 wlan0 인터페이스를 AP모드로 작동시킬 수 있는 패키지 설치
   cp.execSync("bash -c 'sudo apt-get install -y hostapd isc-dhcp-server'");
   // hostapd 설정파일 생성
   await fs.writeFile("/etc/hostapd/hostapd.conf", Buffer.from(
@@ -28,7 +28,8 @@ macaddr_acl=0`));
   option subnet-mask 255.255.255.0;
   option routers 10.10.10.1;
   interface wlan0;
-}`));
+}
+  `));
   // network interfaces 설정파일 생성
   await fs.writeFile("/etc/network/interfaces", Buffer.from(
 `allow-hotplug wlan0
@@ -41,7 +42,6 @@ iface wlan0 inet static
 
 source /etc/network/interfaces.d/*`));
   // wpa_supplicant 비활성화
-  cp.execSync("sudo systemctl disable wpa_supplicant");
   await fs.appendFile("/etc/dhcpcd.conf", Buffer.from(
 `interface=wlan0
     static ip_address="10.10.10.1"
