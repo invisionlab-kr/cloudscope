@@ -21,12 +21,39 @@ logger.level = "debug";
 */
 const express = require("express");
 const server = express();
+const cp = require("child_process");
+const fs = require("fs/promises");
+server.set('view engine', 'ejs');
+server.set('views', './templates');
 server.use( express.static("./statics") );
 /*
 ** http://10.10.10.1/install  초기에 와이파이/장치이름 설정
 */
 server.get("/install", async function(req, res, next) {
-
+  res.render("install");
+});
+server.get("/proc/scan", async function(req, res, next) {
+  Promise.race([
+    new Promise((resolve, reject) => {
+      cp.exec("bash -c 'sudo iw dev wlan0 scan | grep 'SSID:''", function(err,stdout,stderr) {
+        if(err) reject(stderr);
+        else resolve(stdout);
+      })
+    }),
+    new Promise((_,reject) => {
+      setTimeout(() => {
+        reject(null)
+      }, 5000);
+    })
+  ])
+  .then(function(buf) {
+    let ssidArr = buf.toString().split("\n").map((line) => {
+      return {ssid:line.replace("\t", "").replace("SSID: ","")}
+    });
+    res.send(ssidArra);
+  })
+  .catch(function(res) {
+  });
 });
 /*
 ** http://10.10.10.1/         현미경 모니터링
