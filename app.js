@@ -1,5 +1,7 @@
 
-// 로거 준비
+/*
+** 로거 준비
+*/
 const log4js = require("log4js");
 const logger = log4js.getLogger("./default.log");
 logger.level = "debug";
@@ -14,14 +16,27 @@ logger.level = "debug";
 
 
 
-// 웹서버
+/*
+** 웹서버 준비
+*/
 const express = require("express");
 const server = express();
-
 server.use( express.static("./statics") );
+/*
+** http://10.10.10.1/install  초기에 와이파이/장치이름 설정
+*/
+server.get("/install", async function(req, res, next) {
 
+});
+/*
+** http://10.10.10.1/         현미경 모니터링
+*/
+server.get("/", async function(req, res, next) {
+
+});
+/*
+** 웹서버 구동
+*/
 server.listen(80, function() {
   logger.info( "Server started at port 80" );
 });
-// http://10.10.10.1/         현미경 모니터링
-// http://10.10.10.1/install  초기에 와이파이/장치이름 설정
