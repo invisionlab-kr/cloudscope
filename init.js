@@ -37,7 +37,9 @@ iface wlan0 inet static
     gateway 10.10.10.1
     network 10.10.10.0
     broadcast 10.10.10.255
-    
+
 source /etc/network/interfaces.d/*
   `));
+  // wpa_supplicant 비활성화
+  cp.execSync("sudo systemctl disable wpa_supplicant");
 })();
