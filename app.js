@@ -50,7 +50,7 @@ server.get("/proc/scan", async function(req, res, next) {
     let ssidArr = buf.toString().split("\n").map((line) => {
       return {ssid:line.replace("\t", "").replace("SSID: ","")}
     });
-    res.send(ssidArra);
+    res.send(ssidArr);
   })
   .catch(function(res) {
   });
