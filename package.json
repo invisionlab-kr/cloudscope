@@ -1,0 +1,17 @@
+{
+  "name": "cloudscope",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "bash -c 'NODE_ENV=debug nodemon app.js'",
+    "init": "bash -c 'node init.js'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "log4js": "^6.9.1",
+    "puppeteer": "^20.7.2"
+  }
+}
