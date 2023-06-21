@@ -56,6 +56,7 @@ setInterval(async function() {
       axios.get(`https://v2.panvi.kr/cs/report?priv_ip=${netinfo.address}&deviceName=${config.deviceName}`),
       new Promise((_,reject) => setTimeout(reject,3000))
     ])
+    .catch((e) => {});
   }
 }, 5000);
 
