@@ -105,16 +105,16 @@ server.get("/proc/register", async function(req, res, next) {
   if(req.query.passwd) {
     config.wifi_password = req.query.passwd;
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
-    cp.execSync(`bash -c 'sudo wpa_passphrase "${req.query.ssid}" > ./wpa_supplicant.conf`, {
+    cp.execSync(`bash -c 'sudo wpa_passphrase "${req.query.ssid}" > ./wpa_supplicant.conf'`, {
       input: Buffer.from(req.query.passwd+"\n")
     });
-    cp.execSync("bash -c 'sudo wpa_supplicant -B -i wlan1 -c ./wpa_supplicant.conf");
-    cp.execSync("bash -c 'sudo dhclient wlan1");
+    cp.execSync("bash -c 'sudo wpa_supplicant -B -i wlan1 -c ./wpa_supplicant.conf'");
+    cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
   else {
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
-    cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${req.query.ssid}`);
-    cp.execSync("bash -c 'sudo dhclient wlan1");
+    cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${req.query.ssid}'`);
+    cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
   await fs.writeFile("./config.json", Buffer.from(JSON.stringify(config)));
   res.send("OK");
