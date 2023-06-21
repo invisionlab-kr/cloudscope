@@ -51,7 +51,7 @@ setInterval(async function() {
       netinfo = network;
     });
   }
-  if(config.deviceName && config.remoteSsid && network) {
+  if(config.deviceName && config.remoteSsid && netinfo) {
     Promise.race([
       axios.get(`https://v2.panvi.kr/cs/report?priv_ip=${netinfo.address}&deviceName=${config.deviceName}`),
       new Promise((_,reject) => setTimeout(reject,3000))
