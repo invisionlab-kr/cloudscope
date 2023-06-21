@@ -31,7 +31,7 @@ if(fsSync.existsSync("./config.json")) {
   // 패스워드가 없는 와이파이 연결
   else if(config.remoteSsid) {
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
-    cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${fsSync.readFileSync("./ssid.conf").toString()}'`);
+    cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${config.remoteSsid}'`);
     cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
 }
@@ -105,20 +105,10 @@ server.get("/proc/register", async function(req, res, next) {
   config.wifi_password = "";
   if(req.query.passwd) {
     config.wifi_password = req.query.passwd;
-    cp.execSync("bash -c 'sudo ip link set wlan1 up'");
-    cp.execSync(`bash -c 'sudo wpa_passphrase "${req.query.ssid}" > ./wpa_supplicant.conf'`, {
-      input: Buffer.from(req.query.passwd+"\n")
-    });
-    cp.execSync("bash -c 'sudo wpa_supplicant -B -i wlan1 -c ./wpa_supplicant.conf'");
-    cp.execSync("bash -c 'sudo dhclient wlan1'");
-  }
-  else {
-    cp.execSync("bash -c 'sudo ip link set wlan1 up'");
-    cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${req.query.ssid}'`);
-    cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
   await fs.writeFile("./config.json", Buffer.from(JSON.stringify(config)));
   res.send("OK");
+  cp.execSync("bash -c 'sudo reboot'");
 });
 /*
 ** 현미경 모니터링
