@@ -25,6 +25,8 @@
       url: "/proc/scan",
       dataType: "json",
       success: function(response) {
+        console.log(response);
+        
         $("#wifiList").html('');
         for(let i=0; i<response.length; i+=1) {
           $("#wifiList").append(`<li data-ssid="${response[i].ssid}" class="ssid ${selectedWifiSsid==response[i].ssid?'selected':''}">${response[i].ssid}</li>`);
