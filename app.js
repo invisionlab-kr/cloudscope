@@ -62,6 +62,19 @@ setInterval(async function() {
   }
 }, 5000);
 
+
+
+/*
+** 스트리밍 시작
+*/
+let ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
+ffmpegProcess.on("close", function(exitCode) {
+  logger.info("ffmpeg closed with exit code "+exitCode);
+});
+
+
+
+
 /*
 ** 웹서버 준비
 */
@@ -139,4 +152,4 @@ server.listen(80, function() {
 
 
 
-// ffmpeg -i /dev/video0 -framerate 30 -video_size 1280x720 -f rtsp -rtsp_transport tcp rtsp://localhost:8554/scope
+// 

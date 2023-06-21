@@ -5,9 +5,10 @@ const fs = require("fs/promises");
   // 기존 설정파일을 삭제해서 원복
   cp.execSync("sudo rm -rf ./config.json ./wpa_supplicant.conf");
   // 스트리밍에 필요한 패키지 설치
-  cp.execSync("bash -c 'sudo apt-get install -y ffmpeg v4l-utils libmoose-perl liburi-perl libmoosex-getopt-perl libsocket6-perl libanyevent-perl'")
-  cp.execSync("sudo cpan AnyEvent::MPRPC::Client");
+  console.log( "(1/2) Installing video tools (ffmpeg, v4l-utils) ..." );
+  cp.execSync("bash -c 'sudo apt-get install -y ffmpeg v4l-utils'");
   // 라즈베리파이의 wlan0 인터페이스를 AP모드로 작동시킬 수 있는 패키지 설치
+  console.log( "(2/2) Installing network tools (hostapd, dhcp-server) ..." );
   cp.execSync("bash -c 'sudo apt-get install -y hostapd isc-dhcp-server'");
   // hostapd 설정파일 생성
   let rand1 = (Math.random()*10000000)%256;
@@ -55,4 +56,5 @@ source /etc/network/interfaces.d/*`));
     static ip_address="10.10.10.1"
     nohook wpa_supplicant`
   ));
+  cp.execSync("bash -c 'sudo reboot'");
 })();

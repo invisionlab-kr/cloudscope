@@ -14,7 +14,6 @@
 11) sudo pm2 startup systemd -u root
 12) sudo pm2 save
 13) sudo node init.js
-14) sudo reboot
 
-15) 핸드폰이나 랩탑을 이용하여 SSID CLOUDSCOPE_XXXX 에 연결 (패스워드 invisionlab4u)
-16) 웹브라우저를 통해 http://10.10.10.1/install 에 접속하여 WIFI 설정
+14) 핸드폰이나 랩탑을 이용하여 SSID CLOUDSCOPE_XXXX 에 연결 (패스워드 invisionlab4u)
+15) 웹브라우저를 통해 http://10.10.10.1/install 에 접속하여 WIFI 설정
