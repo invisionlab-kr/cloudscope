@@ -9,7 +9,7 @@
 06) sudo npm install -g pm2
 07) git clone cloudscope; cd cloudscope
 08) npm install
-09) sudo pm2 start app.js --NAME=CLOUDSCOPE
+09) sudo pm2 start app.js --name=CLOUDSCOPE
 10) sudo pm2 startup systemd -u root
 11) sudo pm2 save
 12) sudo node init.js
