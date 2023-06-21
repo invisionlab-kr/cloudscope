@@ -123,7 +123,6 @@ server.get("/proc/register", async function(req, res, next) {
   }
   await fs.writeFile("./config.json", Buffer.from(JSON.stringify(config)));
   res.send("OK");
-  cp.execSync("bash -c 'sudo reboot'");
 });
 /*
 ** 현미경 모니터링
