@@ -20,13 +20,14 @@
   // 30초마다 WIFI 스캔 결과 갱신
   let selectedWifiSsid = "";
   setInterval(function() {
+    console.log("scan 요청");
     $.ajax({
       method: "get",
       url: "/proc/scan",
       dataType: "json",
       success: function(response) {
         console.log(response);
-        
+
         $("#wifiList").html('');
         for(let i=0; i<response.length; i+=1) {
           $("#wifiList").append(`<li data-ssid="${response[i].ssid}" class="ssid ${selectedWifiSsid==response[i].ssid?'selected':''}">${response[i].ssid}</li>`);
@@ -38,7 +39,7 @@
         });
       }
     })
-  }, 30*1000);
+  }, 5*1000);
   $("#btnEnter").on("click", function() {
     if(selectedWifiSsid=="") { alert("이 장치를 연결할 공유기를 선택하세요."); return; }
     let wifiPassword = $("#wifiPassword").val();
