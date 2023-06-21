@@ -136,3 +136,7 @@ server.get("/", async function(req, res, next) {
 server.listen(80, function() {
   logger.info( "Server started at port 80" );
 });
+
+
+
+// ffmpeg -i /dev/video0 -framerate 30 -video_size 1280x720 -f rtsp -rtsp_transport tcp rtsp://localhost:8554/scope
