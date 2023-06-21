@@ -76,7 +76,7 @@ server.get("/install", async function(req, res, next) {
 server.get("/proc/scan", async function(req, res, next) {
   Promise.race([
     new Promise((resolve, reject) => {
-      cp.exec("bash -c 'sudo iw dev wlan0 scan | grep 'SSID:''", function(err,stdout,stderr) {
+      cp.exec("bash -c 'sudo iw dev wlan1 scan | grep 'SSID:''", function(err,stdout,stderr) {
         if(err) reject(stderr);
         else resolve(stdout);
       })
@@ -88,8 +88,10 @@ server.get("/proc/scan", async function(req, res, next) {
     })
   ])
   .then(function(buf) {
-    let ssidArr = buf.toString().split("\n").map((line) => {
-      return {ssid:line.replace("\t", "").replace("SSID: ","")}
+    let ssidArr = [];
+    buf.toString().split("\n").forEach((line) => {
+      if(line.replace("\t", "").replace("SSID: ",""))
+        ssidArr.push({ssid:line.replace("\t", "").replace("SSID: ","")});
     });
     res.send(ssidArr);
   })
