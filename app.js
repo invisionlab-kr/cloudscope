@@ -42,7 +42,7 @@ if(fsSync.existsSync("./config.json")) {
 ** 주기적으로 (로컬IP주소-공인IP주소-장치이름) 를 백엔드에 등록
 */
 let reportFailureCount = 0;
-setInterval(await function() {
+setInterval(async function() {
   let netinfo = null;
   let netList = os.networkInterfaces();
   for(let netName in netList) {
