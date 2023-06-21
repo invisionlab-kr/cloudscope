@@ -1,5 +1,5 @@
 wpa_supplicant.conf
-ssid.conf
+config.json
 temp/*
 
 # Logs
