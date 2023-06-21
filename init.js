@@ -10,9 +10,12 @@ const fs = require("fs/promises");
   // 라즈베리파이의 wlan0 인터페이스를 AP모드로 작동시킬 수 있는 패키지 설치
   cp.execSync("bash -c 'sudo apt-get install -y hostapd isc-dhcp-server'");
   // hostapd 설정파일 생성
+  let rand1 = (Math.random()*10000000)%256;
+  let rand2 = (Math.random()*10000000)%256;
+  let rand = ("0"+rand1.toString(16)).slice(-2)+("0"+rand2.toString(16)).slice(-2);
   await fs.writeFile("/etc/hostapd/hostapd.conf", Buffer.from(
 `interface=wlan0
-ssid=cloudscope
+ssid=cloudscope_${rand}
 ignore_broadcast_ssid=0
 hw_mode=g
 channel=11
