@@ -13,7 +13,7 @@
       // bind them together
       hls.attachMedia(video);
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        hls.loadSource(`http://${location.hostname}:8080/playlist.m3u8`);
+        hls.loadSource(`http://${location.hostname}/playlist.m3u8`);
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         });
       });
