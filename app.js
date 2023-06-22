@@ -83,7 +83,7 @@ setInterval(async function() {
 ** 스트리밍 시작
 */
 let ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
-let rtsp2hlsProcess = cp.spawn("bsah", ["-e", "./rtsp2hls.sh"]);
+let rtsp2hlsProcess = cp.spawn("bash", ["-e", "./rtsp2hls.sh"]);
 let lastCapture = 0;
 setInterval(function() {
   if(config.interval) {
