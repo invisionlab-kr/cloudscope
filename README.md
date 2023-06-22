@@ -1,9 +1,9 @@
 # cloudscope 구동 방법
 
 
-01) raspbian OS 6.1 32bit 클린 설치
-02) wifi 연결, 사용자설정, 타임존 설정
-03) apt-get 업데이트 후 업그레이드
+01) Raspberry Pi Imager 를 이용하여 raspbian OS 6.1 32bit 클린 설치
+02) 타임존 설정 (south korea 영어), wifi 연결, 사용자설정
+03) sudo apt-get update; sudo apt-get -y upgrade; sudo apt-get -y dist-upgrade; sudo apt-get -y autoremove
 04) curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 05) sudo apt-get install nodejs
 06) sudo npm install -g pm2
