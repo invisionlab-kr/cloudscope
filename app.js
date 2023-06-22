@@ -83,6 +83,7 @@ setInterval(async function() {
 ** 스트리밍 시작
 */
 let ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
+let rtsp2hlsProcess = cp.spawn("bsah", ["-e", "./rtsp2hls.sh"]);
 let lastCapture = 0;
 setInterval(function() {
   if(config.interval) {
@@ -95,6 +96,7 @@ setInterval(function() {
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./images/${filename}.jpg`);
       // 스트리밍 재구동
       ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
+      
     }
   }
 }, 1000);
