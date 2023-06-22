@@ -7,7 +7,7 @@ const axios = require("axios");
 
 
 (async function setup() {
-if(!fsSync.existsFile("/dev/video0")) {
+if(!fsSync.existsSync("/dev/video0")) {
   setTimeout(setup, 1000);
   return;
 }
