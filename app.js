@@ -45,10 +45,10 @@ if(fsSync.existsSync("./config.json")) {
     cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${config.remoteSsid}'`);
     cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
-  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
+  try { cp.execSync("bash -c 'sudo ip route del default dev wlan0 2> /dev/null'"); } catch(e) {}
 }
 setInterval(function() {
-  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
+  try { cp.execSync("bash -c 'sudo ip route del default dev wlan0 2> /dev/null'"); } catch(e) {}
 }, 1000);
 
 
@@ -167,7 +167,7 @@ server.get("/proc/register", async function(req, res, next) {
     cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
   await fs.writeFile("./config.json", Buffer.from(JSON.stringify(config)));
-  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
+  try { cp.execSync("bash -c 'sudo ip route del default dev wlan0 2> /dev/null'"); } catch(e) {}
   res.send("OK");
 });
 /*
