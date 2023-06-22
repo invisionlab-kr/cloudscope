@@ -1,7 +1,6 @@
 wpa_supplicant.conf
 config.json
-statics/playlist.m3u8
-statics/playlist1.ts
+statics/playlist*
 temp/*
 package-lock.json
 
