@@ -55,10 +55,15 @@ setInterval(async function() {
   }
   if(config.deviceName && config.remoteSsid && netinfo) {
     Promise.race([
-      axios.get(`https://v2.panvi.kr/cs/report?priv_ip=${netinfo.address}&deviceName=${config.deviceName}`),
+      axios.get(`https://cloudscope.invisionlab.xyz/report?priv_ip=${netinfo.address}&deviceName=${config.deviceName}`),
       new Promise((_,reject) => setTimeout(reject,3000))
     ])
-    .catch((e) => {});
+    .then(() => {
+      reportFailureCount = 0;
+    })
+    .catch((e) => {
+      reportFailureCount += 1;
+    });
   }
 }, 5000);
 
@@ -68,9 +73,21 @@ setInterval(async function() {
 ** 스트리밍 시작
 */
 let ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
-ffmpegProcess.on("close", function(exitCode) {
-  logger.info("ffmpeg closed with exit code "+exitCode);
-});
+let lastCapture = 0;
+setInterval(function() {
+  if(config.interval) {
+    let now = (new Date()).getTime();
+    if(now - lastCapture > config.interval*1000) {
+      lastCapture = now;
+      ffmpegProcess.kill();
+      let d = new Date();
+      let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
+      cp.execSync(`ffmpeg -f viddeo4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./images/${filename}.jpg`);
+      // 스트리밍 재구동
+      ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
+    }
+  }
+}, 1000);
 
 
 
@@ -149,7 +166,3 @@ server.get("/", async function(req, res, next) {
 server.listen(80, function() {
   logger.info( "Server started at port 80" );
 });
-
-
-
-// 

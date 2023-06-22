@@ -58,7 +58,7 @@
       },
       success: function(response) {
         console.log("응답이 왔나?", response)
-        $("div.result").html('<h1>CLOUDSCOPE 에 대한 설정을 마치는 중...</h1><p>잠시 후 설정이 완료됩니다. 이 컴퓨터의 WIFI를 공유기로 다시 연결하고, https://cloudscope.invisionlab.xyz 로 이동하여 계속 진행하십시오.</p>');
+        $("div.result").html('<h1>CLOUDSCOPE 에 대한 설정을 마치는 중...</h1><p>잠시 후 설정이 완료됩니다. 이 컴퓨터의 WIFI를 공유기로 다시 연결하고, <a href="https://cloudscope.invisionlab.xyz">여기</a> 로 이동하여 계속 진행하십시오.</p>');
       },
       failure: function(response) {
         console.log("register 요청 실패");

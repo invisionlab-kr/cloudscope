@@ -39,6 +39,17 @@ server.get("/query", function(req, res, next) {
   res.send("<!doctype html><html><head><meta charset='utf-8'><script>alert('활성화된 장치를 찾을 수 없습니다.');</script></head></html>");
 });
 
+
+server.get("/", function(req, res, next) {
+  let html = "<!doctype html><html><head><meta charset='utf-8'></head><body><ul>";
+  for(let i=0; i<scopes.length; i+=1) {
+    html += `<li><a href='http://${scopes[i].priv_ip}'>${scopes[i].deviceName}</a></li>`;
+  }
+  html += "</ul></body></html>";
+  res.send(html);
+});
+
+
 server.listen(3000, function() {
   console.log("CLOUDSCOPE Server ready.");
 });

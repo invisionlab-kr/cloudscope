@@ -12,9 +12,7 @@
 
   <script>
   (async function() {
-    const stream = await navigator.mediaDevices.getUserMedia({ video:{width:1920,height:1080} })
-    const videoEl = document.getElementById("video");
-    videoEl.srcObject = stream;
+    document.getElementById("video").setAttribute("src", `webrtc://${location.hostname}:1985/scope`);
   })();
 
   async function onPlay(el) {
