@@ -18,6 +18,7 @@ logger.level = "debug";
 */
 let config = {localSsid:"", remoteSsid:"", wifi_password:"", deviceName:"", interval:0};
 if(fsSync.existsSync("./config.json")) {
+  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
   config = JSON.parse(fsSync.readFileSync("./config.json").toString());
   // 패스워드가 있는 와이파이 연결
   if(config.remoteSsid && config.wifi_password) {
@@ -60,9 +61,11 @@ setInterval(async function() {
     ])
     .then(() => {
       reportFailureCount = 0;
+      logger.info("Heartbeating...");
     })
     .catch((e) => {
       reportFailureCount += 1;
+      logger.info("Failed to heartbeat!");
     });
   }
 }, 5000);
