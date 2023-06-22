@@ -47,6 +47,9 @@ if(fsSync.existsSync("./config.json")) {
   }
   cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
 }
+setInterval(function() {
+  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
+}, 1000);
 
 
 
