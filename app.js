@@ -25,7 +25,6 @@ logger.level = "debug";
 */
 let config = {localSsid:"", remoteSsid:"", wifi_password:"", deviceName:"", interval:0};
 if(fsSync.existsSync("./config.json")) {
-  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
   config = JSON.parse(fsSync.readFileSync("./config.json").toString());
   // 패스워드가 있는 와이파이 연결
   if(config.remoteSsid && config.wifi_password) {
@@ -44,6 +43,7 @@ if(fsSync.existsSync("./config.json")) {
     cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${config.remoteSsid}'`);
     cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
+  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
 }
 
 
@@ -161,6 +161,7 @@ server.get("/proc/register", async function(req, res, next) {
     cp.execSync("bash -c 'sudo dhclient wlan1'");
   }
   await fs.writeFile("./config.json", Buffer.from(JSON.stringify(config)));
+  cp.execSync("bash -c 'sudo ip route del default dev wlan0'");
   res.send("OK");
 });
 /*
