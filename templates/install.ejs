@@ -48,6 +48,7 @@
     let wifiPassword = $("#wifiPassword").val();
     let deviceName = $("#deviceName").val();
     if(deviceName.trim().length<6) { alert("이 장치를 식별하기 위한 이름을 6글자 이상 입력하세요."); $("#deviceName").focus(); return; }
+    $("div.result").html('<h3>CLOUDSCOPE 에 대한 설정을 마치는 중... 잠시 기다려주세요.</h3>');
     $.ajax({
       method: "get",
       url: "/proc/register",
@@ -58,7 +59,7 @@
       },
       success: function(response) {
         console.log("응답이 왔나?", response)
-        $("div.result").html('<h1>CLOUDSCOPE 에 대한 설정을 마치는 중...</h1><p>잠시 후 설정이 완료됩니다. 이 컴퓨터의 WIFI를 공유기로 다시 연결하고, <a href="https://cloudscope.invisionlab.xyz">여기</a> 로 이동하여 계속 진행하십시오.</p>');
+        $("div.result").html('<h1>이제 이 컴퓨터 또는 스마트폰의 WIFI 를 해제하고 다시 공유기에 연결한 후에, <a href="https://cloudscope.invisionlab.xyz">여기</a>를 눌러 계속 진행하세요.</h1>');
       },
       failure: function(response) {
         console.log("register 요청 실패");

@@ -6,11 +6,11 @@
     </head>
     <body>
         <h1>HLS Live Stream</h1>
-        <script src="js/hls.js"></script>
+        <script src="/js/hls.js"></script>
         <video id="video" controls autoplay></video>
         <script>
             var video = document.getElementById("video");
-            var videoSrc = "hls/live.m3u8";
+            var videoSrc = "/hls/live.m3u8";
             // First check for native browser HLS support
             if (video.canPlayType("application/vnd.apple.mpegurl")) {
                 video.src = videoSrc;

@@ -207,8 +207,8 @@ server.get("/proc/register", async function(req, res, next) {
 server.get("/", async function(req, res, next) {
   res.render("index");
 });
-server.get("/hls", async function(req, res, next) {
-  res.render("hls");
+server.get("/hlsvideo", async function(req, res, next) {
+  res.render("hlsvideo");
 });
 /*
 ** 웹서버 구동
