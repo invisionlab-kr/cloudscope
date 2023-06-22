@@ -5,6 +5,13 @@ const fsSync = require("fs");
 const axios = require("axios");
 
 
+
+(async function setup() {
+if(!fsSync.existsFile("/dev/video0")) {
+  setTimeout(setup, 1000);
+  return;
+}
+
 /*
 ** 로거 준비
 */
@@ -92,9 +99,6 @@ setInterval(function() {
   }
 }, 1000);
 
-
-
-
 /*
 ** 웹서버 준비
 */
@@ -169,3 +173,25 @@ server.get("/", async function(req, res, next) {
 server.listen(80, function() {
   logger.info( "Server started at port 80" );
 });
+
+
+
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
