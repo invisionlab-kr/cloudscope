@@ -29,6 +29,7 @@ if(fsSync.existsSync("./config.json")) {
   // 패스워드가 있는 와이파이 연결
   if(config.remoteSsid && config.wifi_password) {
     try { cp.execSync("bash -c 'sudo wpa_cli disconnect -i wlan1'"); } catch(e) {}
+    try { cp.execSync("bash -c 'killall -9 wpa_supplicant'"); } catch(e) {}
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
     cp.execSync(`bash -c 'sudo wpa_passphrase "${config.remoteSsid}" > ./wpa_supplicant.conf'`, {
       input: Buffer.from(config.wifi_password+"\n")
@@ -39,6 +40,7 @@ if(fsSync.existsSync("./config.json")) {
   // 패스워드가 없는 와이파이 연결
   else if(config.remoteSsid) {
     try { cp.execSync("bash -c 'sudo wpa_cli disconnect -i wlan1'"); } catch(e) {}
+    try { cp.execSync("bash -c 'killall -9 wpa_supplicant'"); } catch(e) {}
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
     cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${config.remoteSsid}'`);
     cp.execSync("bash -c 'sudo dhclient wlan1'");
@@ -96,7 +98,6 @@ setInterval(function() {
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./images/${filename}.jpg`);
       // 스트리밍 재구동
       ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
-      
     }
   }
 }, 1000);
@@ -147,6 +148,7 @@ server.get("/proc/register", async function(req, res, next) {
   if(req.query.passwd) {
     config.wifi_password = req.query.passwd;
     try { cp.execSync("bash -c 'sudo wpa_cli disconnect -i wlan1'"); } catch(e) {}
+    try { cp.execSync("bash -c 'killall -9 wpa_supplicant'"); } catch(e) {}
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
     cp.execSync(`bash -c 'sudo wpa_passphrase "${req.query.ssid}" > ./wpa_supplicant.conf'`, {
       input: Buffer.from(req.query.passwd+"\n")
@@ -156,6 +158,7 @@ server.get("/proc/register", async function(req, res, next) {
   }
   else {
     try { cp.execSync("bash -c 'sudo wpa_cli disconnect -i wlan1'"); } catch(e) {}
+    try { cp.execSync("bash -c 'killall -9 wpa_supplicant'"); } catch(e) {}
     cp.execSync("bash -c 'sudo ip link set wlan1 up'");
     cp.execSync(`bash -c 'sudo iw dev wlan1 connect ${req.query.ssid}'`);
     cp.execSync("bash -c 'sudo dhclient wlan1'");
