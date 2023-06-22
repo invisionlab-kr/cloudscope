@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Live Cam</title>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<body>
-  <video id="video" autoplay="true" controls="controls" type='application/x-mpegURL'></video>
-  <script>
-    if (Hls.isSupported()) {
-      var video = document.getElementById('video');
-      var hls = new Hls();
-      // bind them together
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        hls.loadSource(`http://${location.hostname}/playlist.m3u8`);
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        });
-      });
-    }
-  </script>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>MPEG-DASH Live Stream</title>
+    </head>
+    <body>
+        <h1>MPEG-DASH Live Stream</h1>
+        <script src="js/dash.all.min.js"></script>
+        <video id="videoPlayer" controls></video>
+        <script>
+            (function () {
+                var url = "/dash/live.mpd";
+                var player = dashjs.MediaPlayer().create();
+                player.initialize(
+                    document.querySelector("#videoPlayer"),
+                    url,
+                    true
+                );
+                player.updateSettings({
+                    streaming: {
+                        lowLatencyEnabled: true,
+                        liveDelay: 2,
+                        liveCatchup: {
+                            minDrift: 0.05,
+                            playbackRate: 1,
+                            latencyThreshold: 30,
+                        },
+                    },
+                });
+            })();
+        </script>
+    </body>
 </html>

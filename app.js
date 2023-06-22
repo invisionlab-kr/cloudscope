@@ -7,10 +7,15 @@ const axios = require("axios");
 
 
 (async function setup() {
+/*
+** 카메라가 연결되기를 기다린다.
+*/
 if(!fsSync.existsSync("/dev/video0")) {
   setTimeout(setup, 1000);
   return;
 }
+
+
 
 /*
 ** 로거 준비
@@ -18,6 +23,8 @@ if(!fsSync.existsSync("/dev/video0")) {
 const log4js = require("log4js");
 const logger = log4js.getLogger("app");
 logger.level = "debug";
+
+
 
 
 /*
@@ -84,11 +91,22 @@ setInterval(async function() {
 
 
 
+
+
+/*
+** 공유메모리 준비
+*/
+if(!fsSync.existsSync("/dev/shm/dash")) {
+  cp.execSync("mkdir -p /dev/shm/dash");
+}
+if(!fsSync.existsSync("./statics/dash")) {
+  cp.execSync("ln -s /dev/shm/dash ./statics/dash");
+}
+
 /*
 ** 스트리밍 시작
 */
-let ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
-let rtsp2hlsProcess = cp.spawn("bash", ["-e", "./rtsp2hls.sh"]);
+let ffmpegProcess = cp.spawn("ffmpeg", ["-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v libx264", "-framerate", "30", "-video_size", "1280x720", "-f", "dash", "-seg_duration", "1", "-streaming", "1", "-window_size", "30", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
 let lastCapture = 0;
 setInterval(function() {
   if(config.interval) {
@@ -98,9 +116,9 @@ setInterval(function() {
       ffmpegProcess.kill();
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
-      cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./images/${filename}.jpg`);
+      cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
       // 스트리밍 재구동
-      ffmpegProcess = cp.spawn("ffmpeg", ["-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://localhost:8554/scope"]);
+      ffmpegProcess = cp.spawn("ffmpeg", ["-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v libx264", "-framerate", "30", "-video_size", "1280x720", "-f", "dash", "-seg_duration", "1", "-streaming", "1", "-window_size", "30", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
     }
   }
 }, 1000);

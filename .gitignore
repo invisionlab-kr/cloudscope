@@ -1,6 +1,7 @@
 wpa_supplicant.conf
 config.json
 statics/playlist*
+statics/dash
 temp/*
 package-lock.json
 
