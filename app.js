@@ -276,7 +276,7 @@ server.get("/download", function(req, res, next) {
   let dir = fsSync.opendirSync("./statics/images");
   while( true ) {
     let dirent = dir.readSync();
-    if(dirent==NULL) break;
+    if(dirent==null) break;
     if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
     if(dirent.name.startsWith(req.query.date)) {
       zipper.addLocalFile("./statics/images/"+dirent.name);
