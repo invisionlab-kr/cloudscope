@@ -17,7 +17,8 @@
             
             /*
             ** ffmpeg to hls 인 경우
-            var videoSrc = "/hls/live.m3u8";
+            */
+            var videoSrc = "/hls/scope.m3u8";
             // First check for native browser HLS support
             if (video.canPlayType("application/vnd.apple.mpegurl")) {
                 video.src = videoSrc;
@@ -28,12 +29,11 @@
                 hls.loadSource(videoSrc);
                 hls.attachMedia(video);
             }
-            */
-
+            
             /*
             ** mediamtx 인 경우
-            */
             document.querySelector("#frm").setAttribute("src", "http://"+location.hostname+":8888/scope");
-        </script>
+            */
+            </script>
     </body>
 </html>
