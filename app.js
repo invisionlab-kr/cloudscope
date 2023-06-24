@@ -118,7 +118,7 @@ async function stopStream() {
     cp.execSync("sudo killall -9 ffmpeg");
     let recheckTimer = setInterval(() => {
       let lines = cp.execSync(`bash -c "sudo ps -aux | grep ffmpeg | wc -l"`);
-      if(parseInt(lines)==1) {
+      if(parseInt(lines)==3) {
         clearInterval(recheckTimer);
         ffmpegProcess = null;
         resolve(true);
