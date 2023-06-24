@@ -132,6 +132,7 @@ let lastCapture = 0;
 setInterval(async function() {
   if(config.interval) {
     let now = (new Date()).getTime();
+    logger.debug(`config:${config.interval}, lastCapture:${lastCapture}, now-lastCapture:${now-lastCapture}`);
     if(now - lastCapture > config.interval*1000) {
       lastCapture = now;
       await stopStream();
