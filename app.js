@@ -271,6 +271,7 @@ server.get("/proc/list", function(req, res, next) {
 */
 server.get("/download", function(req, res, next) {
   let files = [];
+  let zip = require("adm-zip");
   let zipper = new zip();
   let dir = fsSync.opendirSync("./static/images");
   while( true ) {
