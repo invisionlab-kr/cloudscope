@@ -131,7 +131,7 @@ async function stopStream() {
 /*
 ** 설정된 시간 간격마다 스트리밍을 중지하고 사진촬영
 */
-let lastCapture = 0;
+let lastCapture = (new Date()).getTime();
 async function takeScreenshot() {
   if(config.interval) {
     let now = (new Date()).getTime();
