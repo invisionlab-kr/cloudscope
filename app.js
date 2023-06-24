@@ -273,7 +273,7 @@ server.get("/download", function(req, res, next) {
   let files = [];
   let zip = require("adm-zip");
   let zipper = new zip();
-  let dir = fsSync.opendirSync("./static/images");
+  let dir = fsSync.opendirSync("./statics/images");
   while( true ) {
     if(dirent==NULL) break;
     if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
