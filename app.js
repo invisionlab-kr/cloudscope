@@ -212,7 +212,7 @@ server.get("/proc/list", function(req, res, next) {
   let dir = fsSync.opendirSync("./statics/images");
   while( true ) {
     let dirent = dir.readSync();
-    if(dirent==NULL) break;
+    if(dirent==null) break;
     if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
     let date = dirent.name.split("_")[0];
     if(!filesByDate[date]) filesByDate[date] = [];
