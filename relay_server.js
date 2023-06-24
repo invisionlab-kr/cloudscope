@@ -40,6 +40,29 @@ server.get("/query", function(req, res, next) {
 });
 
 
+server.get("/manual", function(req, res, next) {
+  let html = `
+<!doctype html>
+<html>
+  <head>
+    <title>CLOUDSCOPE MANUAL</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <h1>INVISIONLAB CLOUDSCOPE</h1>
+    <ol>
+      <li>장치에 전원을 연결하세요.</li>
+      <li>잠시 뒤, 장치의 상태표시등이 점멸합니다.</li>
+      <li>컴퓨터 또는 스마트폰을 이용하여 WIFI cloudscope_XXXX 로 연결하세요. (비밀번호 invisionlab4u)</li>
+      <li>컴퓨터 또는 스마트폰에서 <a href="http://10.10.10.1/install">http://10.10.10.1/install</a> 에 접속하여 장치의 WIFI 설정을 수행합니다.</li>
+      <li>설정을 마친 후, 컴퓨터 또는 스마트폰의 WIFI를 다시 공유기로 연결하세요.</li>
+      <li>컴퓨터 또는 스마트폰에서 <a href="https://cloudscope.invisionlab.xyz">https://cloudscope.invisionlab.xyz</a> 로 방문하여 사용합니다.</li>
+    </ol>
+  </body>
+</html>`;
+})
+
+
 server.get("/", function(req, res, next) {
   let html = "<!doctype html><html><head><meta charset='utf-8'></head><body>";
   html += "<h1>내 주변 CLOUDSCOPE 찾기</h1>";
