@@ -62,7 +62,7 @@ source /etc/network/interfaces.d/*`));
 `[Unit]
 Wants=network.target
 [Service]
-ExecStart=${__dirname}}/bin/mediamtx ${__dirname}/mediamtx.yml
+ExecStart=${__dirname}/bin/mediamtx ${__dirname}/mediamtx.yml
 [Install]
 WantedBy=multi-user.target
 `
