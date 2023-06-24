@@ -56,6 +56,7 @@ server.get("/", function(req, res, next) {
   if(avail.length==0) {
     html += "<h3>지금 접속한 장소에서 사용할 수 있는 CLOUDSCOPE가 없습니다.</h3>";
     html += "<h3>CLOUDSCOPE를 찾을 수 없다면, 이 컴퓨터 또는 핸드폰이 CLOUDSCOPE와 같은 WIFI에 연결되어 있는지 확인하세요.</h3>";
+    html += "<a href='/'>새로고침</a>";
   }
   html += "</body></html>";
   res.send(html);
