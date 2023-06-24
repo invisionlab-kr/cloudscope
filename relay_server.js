@@ -60,6 +60,7 @@ server.get("/manual", function(req, res, next) {
     </ol>
   </body>
 </html>`;
+  res.send(html);
 })
 
 
