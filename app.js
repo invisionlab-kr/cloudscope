@@ -119,7 +119,7 @@ setInterval(async function() {
       ffmpegProcess.on("close", function(code) {
         logger.error(`FFMPEG process closed with exit code ${code}`);
         if(code!=0) {
-          logger.error(ffmpegProcess.stderr);
+          logger.error(ffmpegProcess.stderr.read());
         }
       });
     }
