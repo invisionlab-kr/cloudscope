@@ -122,6 +122,7 @@ setInterval(async function() {
     if(now - lastCapture > (config.interval-3)*1000) {
       lastCapture = now;
       if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
+      await new Promise((resolve) => {setInterval(()=>ffmpegProcess.killed?resolve():''),0});
       await new Promise((resolve) => {setTimeout(()=>resolve(),2000)});
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
@@ -202,7 +203,7 @@ server.get("/proc/register", async function(req, res, next) {
 server.get("/proc/set", async function(req, res, next) {
   config.deviceName = req.query.deviceName;
   config.interval = req.query.interval;
-  fs.writeFileSync("./config.json", Buffer.from(JSON.stringify(config)));
+  fsSync.writeFileSync("./config.json", Buffer.from(JSON.stringify(config)));
   res.send("OK");
 });
 /*
