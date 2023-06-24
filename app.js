@@ -115,7 +115,7 @@ logger.debug("ffmpeg has been started.");
 async function stopStream() {
   return new Promise((resolve) => {
     if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
-    cp.execSync("sudo killall -9 ffmpeg");
+    try { cp.execSync("sudo killall -9 ffmpeg"); } catch(e) {}
     let recheckTimer = setInterval(() => {
       let lines = cp.execSync(`bash -c "sudo ps -aux | grep ffmpeg | wc -l"`);
       if(parseInt(lines)==3) {
