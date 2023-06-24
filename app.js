@@ -123,16 +123,16 @@ setInterval(async function() {
       lastCapture = now;
       if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
       await new Promise((resolve) => {setInterval(()=>ffmpegProcess.killed?resolve():''),0});
-      await new Promise((resolve) => {setTimeout(()=>resolve(),2000)});
+      await new Promise((resolve) => {setTimeout(()=>resolve(),5000)});
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
-      await new Promise((resolve) => {setTimeout(()=>resolve(),1000)});
+      await new Promise((resolve) => {setTimeout(()=>resolve(),5000)});
       // 스트리밍 재구동
       while(!(await startStream()));
     }
   }
-}, 5000);
+}, 10000);
 
 
 /*
