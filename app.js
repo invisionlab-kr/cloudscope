@@ -129,7 +129,7 @@ async function stopStream() {
 ** 설정된 시간 간격마다 스트리밍을 중지하고 사진촬영
 */
 let lastCapture = 0;
-setInterval(async function() {
+async function takeScreenshot() {
   if(config.interval) {
     let now = (new Date()).getTime();
     logger.debug(`config:${config.interval}, lastCapture:${lastCapture}, now-lastCapture:${now-lastCapture}`);
@@ -149,7 +149,10 @@ setInterval(async function() {
       while(!(await startStream()));
     }
   }
-}, 3000);
+  setTimeout(takeScreenshot, 3000);
+}
+takeScreenshot();
+
 
 
 /*
