@@ -113,6 +113,7 @@ async function startStream() {
 async function stopStream() {
   return new Promise((resolve) => {
     if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
+    cp.execSync("sudo killall -9 ffmpeg");
     let recheckTimer = setTimeout(() => {
       let lines = cp.execSync(`bash -c "sudo ps -aux | grep ffmpeg | wc -l"`);
       if(parseInt(lines)==1) {
@@ -135,7 +136,9 @@ async function takeScreenshot() {
     logger.debug(`config:${config.interval}, lastCapture:${lastCapture}, now-lastCapture:${now-lastCapture}`);
     if(now - lastCapture > (config.interval-3)*1000) {
       lastCapture = now;
+      logger.debug("Trying to kill ffmpeg...");
       await stopStream();
+      logger.debug("ffmpeg has been killed.");
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       try {
