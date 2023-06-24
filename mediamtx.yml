@@ -230,6 +230,6 @@ webrtcICETCPMuxAddress:
 
 paths:
   cam:
-    source: rpiCamera
+    source: /dev/video0
     rpiCameraWidth: 1280
     rpiCameraHeight: 720
