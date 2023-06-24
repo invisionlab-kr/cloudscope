@@ -96,6 +96,7 @@ setInterval(async function() {
 
 // [mediamtx] 스트리밍 시작
 let ffmpegProcess = null;
+logger.debug("Start ffmpeg...");
 while(!(await startStream()));
 async function startStream() {
   return new Promise((resolve) => {
@@ -109,6 +110,7 @@ async function startStream() {
     });
   });
 }
+logger.debug("ffmpeg has been started.");
 
 async function stopStream() {
   return new Promise((resolve) => {
