@@ -231,7 +231,6 @@ webrtcICETCPMuxAddress:
 paths:
   scope:
     source: publisher
-    publishIPs: ["127.0.0.1/32"]
     sourceProtocol: automatic
     runOnInit: ffmpeg -f v4l2 -i /dev/video0 -pix_fmt yuv420p -preset ultrafast -b:v 4M -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH
     runOnInitRestart: yes
