@@ -11,6 +11,7 @@
 <body>
   <h1>CLOUDSCOPE 설정 페이지</h1>
 
+  <p id="msgScanning">주변 WIFI 를 검색하는 중...</p>
   <ul id="wifiList">
   </ul>
   WIFI 비밀번호 <input type="text" id="wifiPassword"><br>
@@ -23,14 +24,13 @@
   // 30초마다 WIFI 스캔 결과 갱신
   let selectedWifiSsid = "";
   setInterval(function() {
-    console.log("scan 요청");
+    $("#msgScanning").show();
     $.ajax({
       method: "get",
       url: "/proc/scan",
       dataType: "json",
       success: function(response) {
-        console.log(response);
-
+        $("#msgScanning").hide();
         $("#wifiList").html('');
         for(let i=0; i<response.length; i+=1) {
           $("#wifiList").append(`<li data-ssid="${response[i].ssid}" class="ssid ${selectedWifiSsid==response[i].ssid?'selected':''}">${response[i].ssid}</li>`);
@@ -59,7 +59,7 @@
       },
       success: function(response) {
         console.log("응답이 왔나?", response)
-        $("div.result").html('<h1>이제 이 컴퓨터 또는 스마트폰의 WIFI 를 해제하고 다시 공유기에 연결한 후에, <a href="https://cloudscope.invisionlab.xyz">여기</a>를 눌러 계속 진행하세요.</h1>');
+        $("div.result").html('<h1>CLOUDSCOPE 에 대한 설정을 마쳤습니다.</h1><br><h3>이제 이 컴퓨터 또는 스마트폰의 WIFI를 다시 공유기에 연결한 후에,<br><a href="https://cloudscope.invisionlab.xyz">여기</a>를 눌러 계속 진행하세요.</h3>');
       },
       failure: function(response) {
         console.log("register 요청 실패");

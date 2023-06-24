@@ -41,11 +41,23 @@ server.get("/query", function(req, res, next) {
 
 
 server.get("/", function(req, res, next) {
-  let html = "<!doctype html><html><head><meta charset='utf-8'></head><body><ul>";
-  for(let i=0; i<scopes.length; i+=1) {
-    html += `<li><a href='http://${scopes[i].priv_ip}'>${scopes[i].deviceName}</a></li>`;
+  let html = "<!doctype html><html><head><meta charset='utf-8'></head><body>";
+  html += "<h1>내 주변 CLOUDSCOPE 찾기</h1>";
+  html += "<h3>내 주변에 접속 가능한 CLOUDSCOPE가 여기 목록으로 표시됩니다.</h3>";
+  html += "<ul style='height:300px;border:1px solid #000;overflow-y:auto;'>";
+  let avail = scopes.filter((scope) => {
+    if(scope.publ_ip==req.ip) return true;
+    else return false;
+  });
+  for(let i=0; i<avail.length; i+=1) {
+    html += `<li><a href='http://${avail[i].priv_ip}'>${avail[i].deviceName}</a></li>`;
   }
-  html += "</ul></body></html>";
+  html += "</ul>";
+  if(avail.length==0) {
+    html += "<h3>지금 접속한 장소에서 사용할 수 있는 CLOUDSCOPE가 없습니다.</h3>";
+    html += "<h3>CLOUDSCOPE를 찾을 수 없다면, 이 컴퓨터 또는 핸드폰이 CLOUDSCOPE와 같은 WIFI에 연결되어 있는지 확인하세요.</h3>";
+  }
+  html += "</body></html>";
   res.send(html);
 });
 

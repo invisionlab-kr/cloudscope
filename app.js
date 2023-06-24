@@ -93,52 +93,27 @@ setInterval(async function() {
 
 
 
-/*
-** 공유메모리 준비
-*/
-if(!fsSync.existsSync("/dev/shm/dash")) {
-  cp.execSync("mkdir -p /dev/shm/dash");
-}
-if(!fsSync.existsSync("/dev/shm/hls")) {
-  cp.execSync("mkdir -p /dev/shm/hls");
-}
-if(!fsSync.existsSync("./statics/dash")) {
-  cp.execSync("ln -s /dev/shm/dash ./statics/dash");
-}
-if(!fsSync.existsSync("./statics/hls")) {
-  cp.execSync("ln -s /dev/shm/hls ./statics/hls");
-}
 
-/*
-** 스트리밍 시작
-*/
-
-// [mpeg-dash]
-// let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
-// [hls]
-// let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v", "libx264", "-framerate", "25", "-video_size", "1280x720", "-f", "hls", "-hls_time", "1", "-hls_list_size", "30", "-hls_flags", "delete_segments", "/dev/shm/hls/live.m3u8"])
-// [mediamtx]
-// do nothing
+// [mediamtx] 스트리밍
+let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-f", "v4l2", "-video_size", "1280x720", "-i", "/dev/video0", "-pix_fmt yuv420p", "-preset", "ultrafast", "-c:v", "libx264", "-b:v", "600k", "-f", "rtsp", "rtsp://localhost:8554/scope"]);
 let lastCapture = 0;
-setInterval(function() {
+setInterval(async function() {
   if(config.interval) {
     let now = (new Date()).getTime();
-    if(now - lastCapture > config.interval*1000) {
+    if(now - lastCapture > (config.interval-3)*1000) {
       lastCapture = now;
       ffmpegProcess.kill();
+      await new Promise((resolve) => {setTimeout(()=>resolve(),2000)});
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
+      await new Promise((resolve) => {setTimeout(()=>resolve(),1000)});
       // 스트리밍 재구동
-      // [mpeg-dash]
-      // let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
-      // [hls]
-      // let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v", "libx264", "-framerate", "25", "-video_size", "1280x720", "-f", "hls", "-hls_time", "1", "-hls_list_size", "30", "-hls_flags", "delete_segments", "/dev/shm/hls/live.m3u8"])
-      // [mediamtx]
-      // do nothing
+      ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-f", "v4l2", "-video_size", "1280x720", "-i", "/dev/video0", "-pix_fmt yuv420p", "-preset", "ultrafast", "-c:v", "libx264", "-b:v", "600k", "-f", "rtsp", "rtsp://localhost:8554/scope"]);
     }
   }
-}, 1000);
+}, 5000);
+
 
 /*
 ** 웹서버 준비
@@ -205,14 +180,68 @@ server.get("/proc/register", async function(req, res, next) {
   try { cp.execSync("bash -c 'sudo ip route del default dev wlan0 2> /dev/null'"); } catch(e) {}
   res.send("OK");
 });
+server.get("/proc/set", async function(req, res, next) {
+  config.deviceName = req.query.deviceName;
+  config.interval = req.query.interval;
+  fs.writeFileSync("./config.json", Buffer.from(JSON.stringify(config)));
+  res.send("OK");
+});
 /*
 ** 현미경 모니터링
 */
 server.get("/", async function(req, res, next) {
-  res.render("index");
+  let netinfo = null;
+  let netList = os.networkInterfaces();
+  for(let netName in netList) {
+    netList[netName].forEach(network => {
+      if(network.family!="IPv4" || network.internal) return;
+      netinfo = network;
+    });
+  }
+  res.render("index", {
+    rtspAddress: "rtsp://"+netinfo.address+":8554/scope",
+    deviceName: config.deviceName,
+    interval: config.interval
+  });
 });
-server.get("/hlsvideo", async function(req, res, next) {
-  res.render("hlsvideo");
+/*
+** 날짜별 촬영된 이미지 목록 조회
+*/
+server.get("/proc/list", function(req, res, next) {
+  let filesByDate = {};
+  let dir = fsSync.opendirSync("./statics/images");
+  while( true ) {
+    let dirent = dir.readSync();
+    if(dirent==NULL) break;
+    if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
+    let date = dirent.name.split("_")[0];
+    if(!filesByDate[date]) filesByDate[date] = [];
+    filesByDate[date].push(dirent.name);
+  }
+  dir.close();
+  let countByDate = Object.keys(filesByDate).sort().reduce( (obj,date,idx) => {obj[date] = filesByDate[date].length; return obj;}, {} );
+  res.json(countByDate);
+});
+/*
+** 특정 날짜에 촬영된 이미지 압축 및 다운로드
+*/
+server.get("/download", function(req, res, next) {
+  let files = [];
+  let zipper = new zip();
+  let dir = fsSync.opendirSync("./static/images");
+  while( true ) {
+    if(dirent==NULL) break;
+    if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
+    if(dirent.name.startsWith(req.query.date)) {
+      zipper.addLocalFile("./statics/images/"+dirent.name);
+      files.push(dirent.name);
+    }
+  }
+  dir.close();
+  zipper.writeZip(`./statics/images/${req.query.date}.zip`);;
+  res.download(`./statics/images/${req.query.date}.zip`, function() {
+    if(req.query.delete=="true") fsSync.unlinkSync(`./statics/images/${req.query.date}.zip`);
+  });
 });
 /*
 ** 웹서버 구동

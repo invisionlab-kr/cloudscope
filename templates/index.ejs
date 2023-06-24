@@ -1,34 +1,81 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>MPEG-DASH Live Stream</title>
-    </head>
-    <body>
-        <h1>MPEG-DASH Live Stream</h1>
-        <script src="js/dash.all.min.js"></script>
-        <video id="videoPlayer" controls></video>
-        <script>
-            (function () {
-                var url = "/dash/live.mpd";
-                var player = dashjs.MediaPlayer().create();
-                player.initialize(
-                    document.querySelector("#videoPlayer"),
-                    url,
-                    true
-                );
-                player.updateSettings({
-                    streaming: {
-                        lowLatencyEnabled: true,
-                        liveDelay: 2,
-                        liveCatchup: {
-                            minDrift: 0.05,
-                            playbackRate: 1,
-                            latencyThreshold: 30,
-                        },
-                    },
-                });
-            })();
-        </script>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <title>CLOUDSCOPE</title>
+  </head>
+  <body>
+    <h3>실시간 보기</h3><br>
+    <iframe id="frm" src="about:blank" scrolling="no"></iframe>
+    <p>* 웹브라우저를 통해 접속하였으므로 약 3초 ~ 10초 가량 지연된 화면을 보고 계십니다.</p>
+    <p>* 지연을 줄이려면 컴퓨터의 동영상 플레이어를 열고 <%=rtspAddress%> 로 접속하세요.</p>
+    
+    <div>
+    <h3>설정</h2><br>
+    이 장치를 식별할 이름 <input type="text" id="deviceName" value="<%=deviceName%>"><br>
+    사진촬영간격 (초) <input type="number" id="interval" value="<%=interval%>"> (0초면 촬영하지 않습니다. 최소 8초 간격부터 촬영 가능합니다.)<br>
+    <button id="btnSetup">설정 저장</button>
+    <p id="msgSet" style="display:none;">저장되었습니다. <button id="btnDismiss">확인</button></p>
+    </div>
+
+    <div>
+    <h3>저장된 사진 (1분마다 갱신됩니다)</h3>
+    <ul id="listFiles"></ul>
+    </div>
+
+
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <script>
+    // 실시간보기 연결
+    $("#frm").attr("src", "http://"+location.hostname+":8888/scope");
+
+    // 설정저장버튼
+    $("#btnSetup").on("click", function() {
+      let deviceName = $("#deviceName").val().trim();
+      let interval = $("#interval").val().trim();
+      if(deviceName.length<6) { alert("장치 이름은 6글자 이상이어야 합니다."); return; }
+      if(isNaN(parseInt(interval))) { alert("사진촬영간격은 숫자로 입력하세요. 촬영하지 않으려면 0 을 입력합니다."); return; }
+      if(parseInt(interval)!=0 && parseInt(interval)<8) { alert("사진촬영간격은 최소 8초부터 가능합니다."); return; }
+      $.ajax({
+        method: "get",
+        url: "/proc/set",
+        data: {
+          deviceName,
+          interval
+        },
+        success: function() {
+          $("#msgSet").show();
+        }
+      })
+    });
+    $("#btnDismiss").on("click", function() {
+      $("#msgSet").hide();
+    });
+
+    // 저장된 사진 보기
+    function list() {
+      $("#listFiles").html("");
+      $.ajax({
+        method: "get",
+        url: "/proc/list",
+        dataType: "json",
+        success: function(data) {
+          Object.keys(data).forEach(date => {
+            let html = "<li>";
+            html += `${date} 에 촬영된 사진 ${data[date]}장`;
+            if( data[date]>0 ) {
+              html += `<br><a href="/download?date=${date}">다운받기</a> 또는 <a href="/download?date=${date}&delete=true">다운받고 삭제하기</a>`;
+            }
+            html += "</li>";
+            $("#listFiles").append(html)
+          });
+          
+        }
+      });
+      // 1분마다 다시 조회하기
+      setTimeout(list, 60*1000);
+    }
+    list();
+    </script>
+  </body>
 </html>

@@ -56,5 +56,19 @@ source /etc/network/interfaces.d/*`));
     static ip_address="10.10.10.1"
     nohook wpa_supplicant`
   ));
+  // mediamtx 설정
+  cp.execSync("chmod +x ./bin/mediamtx");
+  await fs.writeFile("/etc/systemd/system/mediamtx.service", Buffer.from(
+`[Unit]
+Wants=network.target
+[Service]
+ExecStart=${__dirname}}/bin/mediamtx ${__dirname}/mediamtx.yml
+[Install]
+WantedBy=multi-user.target
+`
+  ));
+  cp.execSync("sudo systemctl daemon-reload");
+  cp.execSync("sudo systemctl enable mediamtx");
+  // 설정완료 후 재부팅
   cp.execSync("bash -c 'sudo reboot'");
 })();
