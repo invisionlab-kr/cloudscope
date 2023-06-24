@@ -14,7 +14,7 @@
     <div>
     <h3>설정</h2><br>
     이 장치를 식별할 이름 <input type="text" id="deviceName" value="<%=deviceName%>"><br>
-    사진촬영간격 (초) <input type="number" id="interval" value="<%=interval%>"> (0초면 촬영하지 않습니다. 최소 8초 간격부터 촬영 가능합니다.)<br>
+    사진촬영간격 (초) <input type="number" id="interval" value="<%=interval%>"> (0초면 촬영하지 않습니다. 최소 20초 간격부터 촬영 가능합니다.)<br>
     <button id="btnSetup">설정 저장</button>
     <p id="msgSet" style="display:none;">저장되었습니다. <button id="btnDismiss">확인</button></p>
     </div>
@@ -36,7 +36,7 @@
       let interval = $("#interval").val().trim();
       if(deviceName.length<6) { alert("장치 이름은 6글자 이상이어야 합니다."); return; }
       if(isNaN(parseInt(interval))) { alert("사진촬영간격은 숫자로 입력하세요. 촬영하지 않으려면 0 을 입력합니다."); return; }
-      if(parseInt(interval)!=0 && parseInt(interval)<8) { alert("사진촬영간격은 최소 8초부터 가능합니다."); return; }
+      if(parseInt(interval)!=0 && parseInt(interval)<20) { alert("사진촬영간격은 최소 20초부터 가능합니다."); return; }
       $.ajax({
         method: "get",
         url: "/proc/set",

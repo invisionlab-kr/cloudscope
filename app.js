@@ -96,7 +96,7 @@ setInterval(async function() {
 
 // [mediamtx] 스트리밍 시작
 let ffmpegProcess = null;
-logger.debug("Start ffmpeg...");
+logger.debug("starting ffmpeg...");
 while(!(await startStream()));
 async function startStream() {
   return new Promise((resolve) => {
@@ -140,16 +140,13 @@ async function takeScreenshot() {
     logger.debug(`config:${config.interval}, lastCapture:${lastCapture}, now-lastCapture:${now-lastCapture}`);
     if(now - lastCapture > (config.interval-3)*1000) {
       lastCapture = now;
-      logger.debug("Trying to kill ffmpeg...");
       await stopStream();
-      logger.debug("ffmpeg has been killed.");
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       try {
-        cp.execSync(`ffmpeg -y -f video4linux2 -pix_fmt yuv420p -i /dev/video0 -vframes 30 -video_size 1280x720 -update 1 ${__dirname}/statics/images/${filename}.jpg`);
+        cp.execSync(`ffmpeg -y -f video4linux2 -pix_fmt yuv420p -i /dev/video0 -vframes 30 -video_size 1280x720 -update 1 ${__dirname}/statics/images/${filename}.jpg >/dev/null 2>/dev/null`);
         logger.debug(`saved ${__dirname}/statics/images/${filename}.jpg`);
       } catch(e) {
-        logger.error("error while taking a picture from cam.");
       }
       await stopStream();
       // 스트리밍 재구동
