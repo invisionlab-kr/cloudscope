@@ -95,13 +95,15 @@ setInterval(async function() {
 
 
 // [mediamtx] 스트리밍
-let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-f", "v4l2", "-video_size", "1280x720", "-i", "/dev/video0", "-pix_fmt yuv420p", "-preset", "ultrafast", "-c:v", "libx264", "-b:v", "600k", "-f", "rtsp", "rtsp://localhost:8554/scope"]);
+let ffmpegProcess = cp.exec("ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -pix_fmt yuv420p -preset ultrafast -c:v libx264 -b:v 600k -f rtsp rtsp://localhost:8554/scope");
 ffmpegProcess.on("close", function(code) {
   logger.error(`FFMPEG process closed with exit code ${code}`);
-  if(code!=0) {
-    logger.error(ffmpegProcess.stderr.read());
-    logger.debug(ffmpegProcess.stdout.read());
-  }
+});
+ffmpegProcess.on("error", function(data) {
+  logger.error(`FFMPEG process error ${data}`);
+});
+ffmpegProcess.on("disconnect", function() {
+  logger.error(`FFMPEG process disconnected`);
 });
 let lastCapture = 0;
 setInterval(async function() {
@@ -116,13 +118,15 @@ setInterval(async function() {
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
       await new Promise((resolve) => {setTimeout(()=>resolve(),1000)});
       // 스트리밍 재구동
-      ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-f", "v4l2", "-video_size", "1280x720", "-i", "/dev/video0", "-pix_fmt yuv420p", "-preset", "ultrafast", "-c:v", "libx264", "-b:v", "600k", "-f", "rtsp", "rtsp://localhost:8554/scope"]);
+      ffmpegProcess = cp.exec("ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -pix_fmt yuv420p -preset ultrafast -c:v libx264 -b:v 600k -f rtsp rtsp://localhost:8554/scope");
       ffmpegProcess.on("close", function(code) {
         logger.error(`FFMPEG process closed with exit code ${code}`);
-        if(code!=0) {
-          logger.error(ffmpegProcess.stderr.read());
-          logger.debug(ffmpegProcess.stdout.read());
-        }
+      });
+      ffmpegProcess.on("error", function(data) {
+        logger.error(`FFMPEG process error ${data}`);
+      });
+      ffmpegProcess.on("disconnect", function() {
+        logger.error(`FFMPEG process disconnected`);
       });
     }
   }
