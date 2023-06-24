@@ -100,6 +100,7 @@ ffmpegProcess.on("close", function(code) {
   logger.error(`FFMPEG process closed with exit code ${code}`);
   if(code!=0) {
     logger.error(ffmpegProcess.stderr.read());
+    logger.debug(ffmpegProcess.stdout.read());
   }
 });
 let lastCapture = 0;
@@ -120,6 +121,7 @@ setInterval(async function() {
         logger.error(`FFMPEG process closed with exit code ${code}`);
         if(code!=0) {
           logger.error(ffmpegProcess.stderr.read());
+          logger.debug(ffmpegProcess.stdout.read());
         }
       });
     }
