@@ -7,9 +7,11 @@
     <body>
         <h1>HLS Live Stream</h1>
         <script src="/js/hls.js"></script>
+
+        <video id="video-player" controls preload="none">
+            <source src="/hls/scope.m3u8" type="application/x-mpegURL">
+        </video>
         <video id="video" controls autoplay></video>
-
-
         <iframe id="frm" src="about:blank" scrolling="no"></iframe>
 
         <script>
