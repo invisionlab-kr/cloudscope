@@ -6,20 +6,21 @@
     </head>
     <body>
         <h1>HLS Live Stream</h1>
-        <script src="/js/hls.js"></script>
-
-        <video id="video-player" controls preload="none">
+        
+        <video controls preload="none">
             <source src="/hls/scope.m3u8" type="application/x-mpegURL">
         </video>
+        
+        <!--
+        <script src="/js/hls.js"></script>
         <video id="video" controls autoplay></video>
         <iframe id="frm" src="about:blank" scrolling="no"></iframe>
+        -->
 
         <script>
-            var video = document.getElementById("video");
-            
             /*
             ** ffmpeg to hls 인 경우
-            */
+            var video = document.getElementById("video");
             var videoSrc = "/hls/scope.m3u8";
             // First check for native browser HLS support
             if (video.canPlayType("application/vnd.apple.mpegurl")) {
@@ -31,7 +32,9 @@
                 hls.loadSource(videoSrc);
                 hls.attachMedia(video);
             }
+            */
             
+
             /*
             ** mediamtx 인 경우
             document.querySelector("#frm").setAttribute("src", "http://"+location.hostname+":8888/scope");
