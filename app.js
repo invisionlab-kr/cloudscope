@@ -113,10 +113,12 @@ if(!fsSync.existsSync("./statics/hls")) {
 ** 스트리밍 시작
 */
 
-// mpeg-dash
-let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
-// hls
+// [mpeg-dash]
+// let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
+// [hls]
 // let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v", "libx264", "-framerate", "25", "-video_size", "1280x720", "-f", "hls", "-hls_time", "1", "-hls_list_size", "30", "-hls_flags", "delete_segments", "/dev/shm/hls/live.m3u8"])
+// [mediamtx]
+// do nothing
 let lastCapture = 0;
 setInterval(function() {
   if(config.interval) {
@@ -128,10 +130,12 @@ setInterval(function() {
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
       // 스트리밍 재구동
-      // mpeg-dash
-      let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
-      // hls
+      // [mpeg-dash]
+      // let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-framerate", "30", "-video_size", "1280x720", "-c:v", "libx264", "-b:v", "4M", "-f", "dash", "-seg_duration", "1", "-window_size", "10", "-remove_at_exit", "1", "/dev/shm/dash/live.mpd"]);
+      // [hls]
       // let ffmpegProcess = cp.spawn("sudo", ["ffmpeg", "-y", "-input_format", "yuv420p", "-i", "/dev/video0", "-c:v", "libx264", "-framerate", "25", "-video_size", "1280x720", "-f", "hls", "-hls_time", "1", "-hls_list_size", "30", "-hls_flags", "delete_segments", "/dev/shm/hls/live.m3u8"])
+      // [mediamtx]
+      // do nothing
     }
   }
 }, 1000);
