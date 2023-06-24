@@ -275,6 +275,7 @@ server.get("/download", function(req, res, next) {
   let zipper = new zip();
   let dir = fsSync.opendirSync("./statics/images");
   while( true ) {
+    let dirent = dir.readSync();
     if(dirent==NULL) break;
     if(dirent.name=="tag" || dirent.isDirectory() || !dirent.name.endsWith(".jpg") || dirent.name.indexOf("_")==-1) continue;
     if(dirent.name.startsWith(req.query.date)) {
