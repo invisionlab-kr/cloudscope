@@ -123,7 +123,7 @@ async function stopStream() {
         ffmpegProcess = null;
         resolve(true);
       }
-    }, 1000);
+    }, 500);
   });
 }
 
