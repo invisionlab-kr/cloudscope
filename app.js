@@ -139,7 +139,8 @@ setInterval(async function() {
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
       try {
-        cp.execSync(`sudo ffmpeg -y -f video4linux2 -pix_fmt yuv420p -i /dev/video0 -vframes 30 -video_size 1280x720 -update 1 ./statics/images/${filename}.jpg`);
+        cp.execSync(`ffmpeg -y -f video4linux2 -pix_fmt yuv420p -i /dev/video0 -vframes 30 -video_size 1280x720 -update 1 ${__dirname}/statics/images/${filename}.jpg`);
+        logger.debug(`saved ${__dirname}/statics/images/${filename}.jpg`);
       } catch(e) {
         logger.error("error while taking a picture from cam.");
       }
