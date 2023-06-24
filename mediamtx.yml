@@ -229,7 +229,7 @@ webrtcICETCPMuxAddress:
 
 
 paths:
-  all:
+  scope:
     source: publisher
     publishIPs: ["127.0.0.1/32"]
     sourceProtocol: automatic
