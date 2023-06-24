@@ -122,8 +122,10 @@ async function stopStream() {
         clearInterval(recheckTimer);
         ffmpegProcess = null;
         resolve(true);
+      } else {
+        logger.debug(`looks like ffmpeg still alive... (${parseInt(lines)})`);
       }
-    }, 500);
+    }, 1000);
   });
 }
 
