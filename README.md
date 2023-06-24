@@ -5,9 +5,9 @@
 02) 타임존 (south korea) 및 언어설정 (영어), 사용자 설정, wifi 연결
 03) sudo apt-get update; sudo apt-get -y upgrade; sudo apt-get -y dist-upgrade; sudo apt-get -y autoremove
 04) curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-05) sudo apt-get install nodejs
+05) sudo apt-get -y install nodejs
 06) sudo npm install -g pm2
-07) git clone cloudscope; cd cloudscope
+07) git clone https://github.com/invisionlab-kr/cloudscope; cd cloudscope
 08) npm install
 09) sudo pm2 start app.js --name=CLOUDSCOPE
 10) sudo pm2 startup systemd -u root
