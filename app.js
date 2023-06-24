@@ -99,7 +99,7 @@ let ffmpegProcess = null;
 while(!(await startStream()));
 async function startStream() {
   return new Promise((resolve) => {
-    let successTimer = setTimeout(() => {resolve(true)}, 1000);
+    let successTimer = setTimeout(() => {resolve(true)}, 3000);
     ffmpegProcess = cp.exec("ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -pix_fmt yuv420p -preset ultrafast -c:v libx264 -b:v 600k -f rtsp rtsp://localhost:8554/scope");
     ffmpegProcess.on("close", function(code) {
       logger.error(`FFMPEG process closed with exit code ${code}`);
@@ -110,6 +110,19 @@ async function startStream() {
   });
 }
 
+async function stopStream() {
+  return new Promise((resolve) => {
+    if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
+    let recheckTimer = setTimeout(() => {
+      let lines = cp.execSync(`bash -c "sudo ps -aux | grep ffmpeg | wc -l"`);
+      if(parseInt(lines)==1) {
+        clearTimeout(recheckTimer);
+        ffmpegProcess = null;
+        resolve(true);
+      }
+    }, 1000);
+  });
+}
 
 
 /*
@@ -119,15 +132,17 @@ let lastCapture = 0;
 setInterval(async function() {
   if(config.interval) {
     let now = (new Date()).getTime();
-    if(now - lastCapture > (config.interval-3)*1000) {
+    if(now - lastCapture > config.interval*1000) {
       lastCapture = now;
-      if(ffmpegProcess) ffmpegProcess.kill("SIGINT");
-      await new Promise((resolve) => {setInterval(()=>ffmpegProcess.killed?resolve():''),0});
-      await new Promise((resolve) => {setTimeout(()=>resolve(),5000)});
+      await stopStream();
       let d = new Date();
       let filename = d.getFullYear()+("0"+(parseInt(d.getMonth())+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"_"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+("0"+d.getSeconds()).slice(-2);
-      cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
-      await new Promise((resolve) => {setTimeout(()=>resolve(),5000)});
+      try {
+        cp.execSync(`ffmpeg -f video4linux2 -i /dev/video0 -vframes 2 -video_size 1280x720 ./statics/images/${filename}.jpg`);
+      } catch(e) {
+        logger.error("error while taking a picture from cam.");
+      }
+      await stopStream();
       // 스트리밍 재구동
       while(!(await startStream()));
     }
